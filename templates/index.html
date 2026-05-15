@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Algo Buddy</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>Algo Buddy</h1>
+    <p>Your AI-powered algorithm study companion</p>
+  </header>
+
+  <main>
+    <!-- Home: algorithm input -->
+    <section id="home-section">
+      <form id="algo-form">
+        <input id="algo-input" type="text" placeholder="Enter an algorithm (e.g. binary search)" autocomplete="off" required>
+        <button type="submit">Generate Code</button>
+      </form>
+    </section>
+
+    <!-- Code display + mode selection -->
+    <section id="code-section" class="hidden">
+      <h2 id="algo-title"></h2>
+      <pre><code id="code-output"></code></pre>
+      <div id="mode-buttons">
+        <button id="study-btn">Study Mode</button>
+        <button id="quiz-btn">Quiz Mode</button>
+      </div>
+    </section>
+
+    <!-- Study mode -->
+    <section id="study-section" class="hidden">
+      <h2>Study Mode</h2>
+      <div id="study-chat"></div>
+      <form id="study-form">
+        <input id="study-input" type="text" placeholder="What are you struggling with?" autocomplete="off" required>
+        <button type="submit">Ask</button>
+      </form>
+      <button id="study-quiz-btn">Quiz me on this session</button>
+    </section>
+
+    <!-- Quiz mode (standalone or from study) -->
+    <section id="quiz-section" class="hidden">
+      <h2>Quiz</h2>
+      <div id="quiz-questions"></div>
+      <button id="quiz-done-btn">Done</button>
+    </section>
+
+    <!-- Quiz results -->
+    <section id="results-section" class="hidden">
+      <h2>Results</h2>
+      <div id="results-output"></div>
+      <button id="back-btn">Back to Code</button>
+    </section>
+  </main>
+
+  <div id="loading" class="hidden">Loading…</div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
