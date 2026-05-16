@@ -7,6 +7,8 @@ For each requirement listed here, a determinstic function can be written to dete
 
 ## Initial code generation
 - The generated Python code has no syntax errors.
+- If the user enters the name or phrase of an algorithm that tries to solve a problem in which no well-known solution exists, the LLM should not attempt to implement the algorithm.
+    - Can be tested by asking the LLM to write code that solves the halting problem.
 
 ## Quiz mode
 
