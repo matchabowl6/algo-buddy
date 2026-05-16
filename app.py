@@ -80,21 +80,33 @@ def study_quiz():
     history = data.get("history", [])
 
     context = "\n".join(f"{h['role'].upper()}: {h['content']}" for h in history)
+
+    # Step 1: identify distinct topics from the study session
+    topics_result = chat_json(
+        "You are analyzing a study session conversation. "
+        "List every distinct topic that was discussed. "
+        'Return a JSON object with a single key "topics" whose value is an array of short topic strings. '
+        "Be consistent and exhaustive. Each topic should be a concise phrase (e.g. 'time complexity', 'use cases').",
+        f"Algorithm: {algorithm}\n\nStudy session:\n{context}"
+    )
+    topics = topics_result.get("topics", [])
+    num_questions = max(len(topics) * 2, 2)
+
+    # Step 2: generate exactly 2 questions per topic
     system = (
-        "You are Algo Buddy. Generate a short quiz based on the study session conversation provided. "
-        'Return a JSON object with a single key "questions" whose value is an array of 5 question objects. '
-        "Each question has: "
+        "You are Algo Buddy. Generate a quiz based on the study session. "
+        f"There are {len(topics)} topics: {', '.join(topics)}. "
+        f"Generate exactly 2 questions per topic ({num_questions} questions total), covering each topic evenly. "
+        'Return a JSON object with a single key "questions" whose value is an array of question objects. '
+        "Each question has: 'topic' (string, one of the listed topics), "
         "'type' ('multiple_choice' or 'short_response'), 'question' (string), "
-        "and for multiple_choice: 'options' (array of 4 strings) and 'answer' (the correct option string). "
-        "For short_response: 'answer' (the correct answer string, max 50 chars). "
-        "At least one question must ask for the time complexity (short_response)."
+        "for multiple_choice: 'options' (array of 4 strings) and 'answer' (correct option string). "
+        "For short_response: 'answer' (correct answer string, max 50 chars)."
     )
     prompt = f"Algorithm: {algorithm}\n\nStudy session:\n{context}\n\nGenerate the quiz."
     result = chat_json(system, prompt)
-    questions = result.get("questions", result) if isinstance(result, dict) else result
-    if isinstance(questions, dict):
-        questions = list(questions.values())[0] if questions else []
-    return jsonify({"questions": questions})
+    questions = result.get("questions", [])
+    return jsonify({"questions": questions, "topics": topics})
 
 
 @app.route("/quiz", methods=["POST"])
@@ -123,34 +135,38 @@ def study_effectiveness():
     data = request.json
     history = data.get("history", [])
     questions = data.get("questions", [])
+    topics = data.get("topics", [])
 
     context = "\n".join(f"{h['role'].upper()}: {h['content']}" for h in history)
-    question_list = "\n".join(f"{i+1}. {q['question']}" for i, q in enumerate(questions))
+    question_list = "\n".join(
+        f"{i+1}. [topic: {q.get('topic', '?')}] {q['question']}" for i, q in enumerate(questions)
+    )
 
     system = (
         "You are evaluating how effectively a study session prepared the user for a quiz. "
-        "Given a study conversation and quiz questions:\n"
-        "1. List the distinct topics discussed in the study conversation (be consistent and exhaustive).\n"
-        "2. For each quiz question, determine if its topic was covered in the study conversation.\n"
-        "Return ONLY a JSON object with:\n"
-        "  'topics': array of strings (each distinct topic discussed in the study session),\n"
-        "  'covered': array of booleans (true if that question's topic was covered in the session).\n"
-        "Be deterministic: given the same input, always return the same topics and covered values."
+        f"The topics discussed in the study session are: {', '.join(topics)}.\n"
+        "For each quiz question (which includes its assigned topic), determine:\n"
+        "  - 'on_topic': true if the question's topic is in the list of study session topics\n"
+        "  - 'correctly_classified': true if the question accurately tests its assigned topic\n"
+        "Return a JSON object with:\n"
+        "  'questions': array of objects, one per quiz question, each with 'on_topic' (bool) and 'correctly_classified' (bool).\n"
+        "Be deterministic: given the same input, always return the same values."
     )
     prompt = f"Study conversation:\n{context}\n\nQuiz questions:\n{question_list}"
 
     result = chat_json(system, prompt)
+    q_results = result.get("questions", [])
 
-    topics = result.get("topics", [])
-    topics_count = max(len(topics), 1)
-    covered = result.get("covered", [])
-    correctly_classified = sum(1 for c in covered if c)
-    effectiveness = min(round(correctly_classified / topics_count, 4), 1.0)
+    total = max(len(questions), 1)
+    correctly_classified = sum(1 for r in q_results if r.get("correctly_classified"))
+    off_topic = sum(1 for r in q_results if not r.get("on_topic"))
+    effectiveness = round((correctly_classified - off_topic * 0.1) / total, 4)
 
     return jsonify({
         "effectiveness": effectiveness,
         "correctly_classified": correctly_classified,
-        "topics_count": topics_count,
+        "off_topic": off_topic,
+        "total_questions": total,
     })
 
 
