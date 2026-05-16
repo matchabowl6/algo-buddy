@@ -26,3 +26,8 @@ An AI assistant that helps you prepare for technical interviews by helping you l
    ```
 
 4. Open your browser to `http://localhost:5000`
+
+## To run the tests
+
+1. Activate virtual environment
+2. Run `pytest eval/`
