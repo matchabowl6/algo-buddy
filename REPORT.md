@@ -33,10 +33,12 @@ The initial website was built by first writing a plan (under the plan directory,
 
 The initial website (with the quiz and study modes) works as expected, even if there were a few UI/UX issues.
 
+After using the quiz function in study-mode, the app listed the effectiveness metric as "250%" when the effectiveness metric should generally not exceed 100%.
+
 **Change:** initial version, n/a
-**Motivating example:** initial version, n/a
-**Delta:**
-**Conclusion:**
+**Motivating example:** At this point, the test cases in eval/ have not been coded yet, but the effectiveness display has been implemented. Given the effectiveness score above, the effectiveness formula is clearly faulty, since it's unlikely this is a product of the LLM's response.
+**Delta:** initial version, n/a
+**Conclusion:** Modify the effectiveness formula, implement the test cases now that we know the website can actually function.
 
 ## Code walkthrough
 
