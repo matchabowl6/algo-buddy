@@ -35,10 +35,46 @@ The initial website (with the quiz and study modes) works as expected, even if t
 
 After using the quiz function in study-mode, the app listed the effectiveness metric as "250%" when the effectiveness metric should generally not exceed 100%.
 
+![250% efficiency](writeup_assets/efficiency_250.png)
+
 **Change:** initial version, n/a
-**Motivating example:** At this point, the test cases in eval/ have not been coded yet, but the effectiveness display has been implemented. Given the effectiveness score above, the effectiveness formula is clearly faulty, since it's unlikely this is a product of the LLM's response.
+
+**Motivating example:**
+
 **Delta:** initial version, n/a
-**Conclusion:** Modify the effectiveness formula, implement the test cases now that we know the website can actually function.
+
+**Conclusion:** Website works but is not perfect. Efficiency score formula is faulty, and test cases need to be added.
+
+### V2
+
+Test cases and modified efficiency formula implemented. All test cases pass. This is the result after specifying "binary search" as formula and asking about space and time complexity, then asking to be quizzed on the current study discussion:
+![0.771 effectiveness](writeup_assets/efficiency_0.771.png)
+
+The effectiveness score is now 0.771: 11 of 14 question(s) correctly classified, 2 off topic.
+
+An effectiveness score of 1 is the optimal score.
+
+**Change:** Implement test cases, modify efficiency formula
+
+**Motivating example:** An efficiency score of 250%, which is far above the expected max of 100%, is clearly faulty. The efficiency score has therefore been modified to be 
+```
+effectiveness = (((# of questions in study mode's quiz function whose topics are correctly classified) - (# of questions in study mode's quiz function whose topics are not about what was discussed in the current study mode session) * 0.1) / # of study-mode quiz questions)
+```
+which rewards correct on-topic classifications referenced from current study chat, but punishes off-topic questions.
+
+**Delta:** 250% or 2.5 -> 0.771 = decrease of 1.729
+
+**Conclusion:** Effectiveness score is now more accurate in determining if the study function is actually helpful. But app is still not perfect, correct and incorrect answers' explanation is not displayed; and if asking the website "What's the height of mount everest?" the app would respond to that question and include it in the quiz (which should not happen because that is not about algorithms).
+
+### V3
+
+**Change:**
+
+**Motivating example:**
+
+**Delta:**
+
+**Conclusion:**
 
 ## Code walkthrough
 
