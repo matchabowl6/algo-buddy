@@ -18,6 +18,8 @@ effectiveness = (# of questions in study mode's quiz function whose topics are c
 
 This is a better metric because it more closely measures whether or not the AI assistant is doing its job correctly to help the user memorize information about the algorithm.
 
+Additionally, for initial code generation, the hallucination evaluation has been changed from 'don't hallucinate code for a very niche algorithm' to 'don't try to write code for a problem that does not have a well-known solution'. This was done to make the hallucination metric easier to evaluate as 'niche' is a subjective term and in more specialized cases, niche algorithms could be helpful.
+
 ## What and why
 
 The app is an AI assistant that helps you prepare for technical interviews by helping you learn common algorithms. The app's target audience are people hunting for jobs in Computer Science where sufficient recall of algorithmic choices are important.
