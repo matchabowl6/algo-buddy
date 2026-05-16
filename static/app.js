@@ -161,6 +161,7 @@ $("quiz-done-btn").addEventListener("click", async () => {
   }
 
   renderResults(data.results, effectiveness);
+  $("resume-study-btn").classList.toggle("hidden", !isStudyQuiz);
   show("results-section");
 });
 
@@ -195,6 +196,8 @@ function renderResults(results, effectiveness) {
 }
 
 $("back-btn").addEventListener("click", () => show("code-section"));
+
+$("resume-study-btn").addEventListener("click", () => show("study-section"));
 
 function escapeHtml(str) {
   return String(str)
