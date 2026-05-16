@@ -196,6 +196,7 @@ def grade():
     system = (
         "You are Algo Buddy grading a quiz. For each question, determine if the user's answer is correct. "
         "For short_response, accept reasonable variations (case-insensitive, minor wording differences). "
+        f"There are {len(questions)} questions to grade. Grade each and every one."
         'Return a JSON object with a single key "results" whose value is an array. '
         "Each element has: "
         "'correct' (boolean), "

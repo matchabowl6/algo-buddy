@@ -160,26 +160,35 @@ $("quiz-done-btn").addEventListener("click", async () => {
     effectiveness = effData;
   }
 
-  renderResults(data.results, effectiveness);
+  renderResults(data.results, effectiveness, answers);
   $("resume-study-btn").classList.toggle("hidden", !isStudyQuiz);
   show("results-section");
 });
 
-function renderResults(results, effectiveness) {
+function renderResults(results, effectiveness, answers = {}) {
   const container = $("results-output");
   container.innerHTML = "";
   let score = 0;
-  results.forEach((r, i) => {
+  quizQuestions.forEach((q, i) => {
+    const r = results[i] || {};
     if (r.correct) score++;
+    const userAns = answers[i] || "(no answer)";
     const div = document.createElement("div");
     div.className = `result-item ${r.correct ? "correct" : "incorrect"}`;
-    div.innerHTML = `<p><strong>Q${i + 1}:</strong> ${escapeHtml(quizQuestions[i].question)}</p>
-      <p>${r.correct ? "✅ Correct" : `❌ Incorrect — ${escapeHtml(r.explanation || "")}`}</p>`;
+    let html = `<p><strong>Q${i + 1}:</strong> ${escapeHtml(q.question)}</p>
+      <p><strong>Your answer:</strong> ${escapeHtml(userAns)}</p>
+      <p><strong>Correct answer:</strong> ${escapeHtml(q.answer)}</p>
+      <p>${r.correct ? "✅ Correct" : "❌ Incorrect"}</p>
+      <p><em>${escapeHtml(r.correct_explanation || "")}</em></p>`;
+    if (!r.correct && r.incorrect_explanation) {
+      html += `<p>${escapeHtml(r.incorrect_explanation)}</p>`;
+    }
+    div.innerHTML = html;
     container.appendChild(div);
   });
   const summary = document.createElement("p");
   summary.className = "score";
-  summary.textContent = `Score: ${score} / ${results.length}`;
+  summary.textContent = `Score: ${score} / ${quizQuestions.length}`;
   container.prepend(summary);
 
   if (effectiveness !== null && effectiveness !== undefined) {
