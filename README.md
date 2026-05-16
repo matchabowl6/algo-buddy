@@ -25,6 +25,11 @@ An AI assistant that helps you prepare for technical interviews by helping you l
    python app.py
    ```
 
+   - If you are on macOS, you'll need to start the server over port 5001 to avoid conflicts with AirPlay. This can be achieved by running:
+   ```
+   flask --app app.py run --port 5001
+   ```
+
 4. Open your browser to `http://localhost:5000`
 
 ## To run the tests
