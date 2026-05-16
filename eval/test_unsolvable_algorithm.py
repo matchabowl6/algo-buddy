@@ -26,6 +26,6 @@ def test_halting_problem_is_not_runnable_code(client):
     try:
         tree = ast.parse(code)
     except SyntaxError:
-        return  # also acceptable — not valid Python code
+        return  # also acceptable — not valid Python code. Syntax is part of a different test.
     has_function = any(isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) for n in ast.walk(tree))
     assert not has_function
