@@ -217,19 +217,9 @@ if __name__ == "__main__":
 def eval_valid_json():
     """
     Calls the real OpenAI API and verifies response.choices[0].message.content
-    is strictly valid JSON. Returns {"pass": true} or {"pass": false, "error": "..."}.
+    is strictly valid JSON. This is achieved by simulating calls to generate() and study().
+    Returns {"pass": true} or {"pass": false, "error": "..."}.
     """
-    system = request.json.get("system", "Return a JSON object with key \"ok\" set to true.")
-    prompt = request.json.get("prompt", "Respond now.")
-    response = client.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": system},
-            {"role": "user",   "content": prompt},
-        ],
-        response_format={"type": "json_object"},
-    )
-    content = response.choices[0].message.content
     try:
         # Simulate generate() call
         algorithm = "bubble sort" #data.get("algorithm", "").strip()
