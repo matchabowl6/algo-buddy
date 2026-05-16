@@ -1,0 +1,6 @@
+algorithm_name,time_complexity,space_complexity,general_approach,general_approach_2
+sequential search,O(n),O(1),exhaustive,naive
+binary search,O(log n),O(1),divide and conquer,-
+merge sort,O(n log n),O(n),divide and conquer,-
+dijkstra's,O((V+E) logV),O(V),greedy
+knapsack problem solver (dynamic programming),O(nW),O(nW),dynamic_programming,-
