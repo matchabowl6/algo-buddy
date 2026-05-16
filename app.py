@@ -93,7 +93,7 @@ def study_quiz():
     context = ""
     for i in range(len(history)):
         h = history[i]
-        if h['off-topic'] != True:
+        if 'off-topic' not in h or h['off-topic'] != True:
             context = context + f"{h['role'].upper()}: {h['content']}{"\n" if i < len(history) - 1 else ""}"
 
     # Step 1: identify distinct topics from the study session
