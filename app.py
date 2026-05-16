@@ -116,6 +116,52 @@ def quiz():
     return jsonify({"questions": questions})
 
 
+@app.route("/study/effectiveness", methods=["POST"])
+def study_effectiveness():
+    """
+    Measures how well the app taught the user:
+      effectiveness = questions whose topics were covered in the study session
+                      / distinct topics discussed in the study session
+    """
+    data = request.json
+    history = data.get("history", [])
+    questions = data.get("questions", [])
+
+    context = "\n".join(f"{h['role'].upper()}: {h['content']}" for h in history)
+    question_list = "\n".join(f"{i+1}. {q['question']}" for i, q in enumerate(questions))
+
+    system = (
+        "You are evaluating how effectively a study session prepared the user for a quiz. "
+        "Given a study conversation and quiz questions:\n"
+        "1. Count the distinct topics discussed in the study conversation.\n"
+        "2. For each quiz question, determine if its topic was covered in the study conversation.\n"
+        "Return ONLY a JSON object with:\n"
+        "  'topics_count': integer (distinct topics in the study session),\n"
+        "  'covered': array of booleans (true if that question's topic was covered in the session).\n"
+        "Return ONLY the JSON object, no markdown."
+    )
+    prompt = f"Study conversation:\n{context}\n\nQuiz questions:\n{question_list}"
+
+    import json, re
+    raw = chat(system, prompt)
+    try:
+        result = json.loads(raw)
+    except Exception:
+        match = re.search(r'\{.*\}', raw, re.DOTALL)
+        result = json.loads(match.group()) if match else {"topics_count": 1, "covered": []}
+
+    topics_count = max(result.get("topics_count", 1), 1)
+    covered = result.get("covered", [])
+    correctly_classified = sum(1 for c in covered if c)
+    effectiveness = round(correctly_classified / topics_count, 4)
+
+    return jsonify({
+        "effectiveness": effectiveness,
+        "correctly_classified": correctly_classified,
+        "topics_count": topics_count,
+    })
+
+
 @app.route("/quiz/grade", methods=["POST"])
 def grade():
     data = request.json

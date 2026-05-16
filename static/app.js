@@ -3,6 +3,8 @@ const $ = id => document.getElementById(id);
 let currentAlgorithm = "";
 let studyHistory = [];
 let quizQuestions = [];
+let isStudyQuiz = false;
+let studyHistorySnapshot = [];
 
 function show(sectionId) {
   ["home-section", "code-section", "study-section", "quiz-section", "results-section"]
@@ -46,6 +48,7 @@ $("study-btn").addEventListener("click", () => {
 });
 
 $("quiz-btn").addEventListener("click", async () => {
+  isStudyQuiz = false;
   setLoading(true);
   const data = await post("/quiz", { algorithm: currentAlgorithm });
   setLoading(false);
@@ -85,6 +88,8 @@ $("study-quiz-btn").addEventListener("click", async () => {
     alert("Have a study session first!");
     return;
   }
+  isStudyQuiz = true;
+  studyHistorySnapshot = [...studyHistory];
   setLoading(true);
   const data = await post("/study/quiz", { algorithm: currentAlgorithm, history: studyHistory });
   setLoading(false);
@@ -140,11 +145,23 @@ $("quiz-done-btn").addEventListener("click", async () => {
     answers,
   });
   setLoading(false);
-  renderResults(data.results);
+
+  let effectiveness = null;
+  if (isStudyQuiz) {
+    setLoading(true);
+    const effData = await post("/study/effectiveness", {
+      history: studyHistorySnapshot,
+      questions: quizQuestions,
+    });
+    setLoading(false);
+    effectiveness = effData;
+  }
+
+  renderResults(data.results, effectiveness);
   show("results-section");
 });
 
-function renderResults(results) {
+function renderResults(results, effectiveness) {
   const container = $("results-output");
   container.innerHTML = "";
   let score = 0;
@@ -160,6 +177,18 @@ function renderResults(results) {
   summary.className = "score";
   summary.textContent = `Score: ${score} / ${results.length}`;
   container.prepend(summary);
+
+  if (effectiveness !== null && effectiveness !== undefined) {
+    const pct = Math.round(effectiveness.effectiveness * 100);
+    const effDiv = document.createElement("div");
+    effDiv.className = "effectiveness";
+    effDiv.innerHTML =
+      `<h3>App Effectiveness: ${pct}%</h3>` +
+      `<p>This measures how well the app prepared you — ` +
+      `${effectiveness.correctly_classified} of the ${effectiveness.topics_count} ` +
+      `topic(s) covered in your study session appeared in the quiz.</p>`;
+    container.appendChild(effDiv);
+  }
 }
 
 $("back-btn").addEventListener("click", () => show("code-section"));
