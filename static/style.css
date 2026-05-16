@@ -136,4 +136,15 @@ pre {
   padding: 0.6rem 1.2rem;
   border-radius: 20px;
   font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+@keyframes ellipsis {
+  0%   { content: "."; }
+  33%  { content: ".."; }
+  66%  { content: "..."; }
+}
+#loading::after {
+  content: ".";
+  animation: ellipsis 1.2s steps(1, end) infinite;
 }
