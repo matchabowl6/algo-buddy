@@ -35,7 +35,7 @@ The initial website (with the quiz and study modes) works as expected, even if t
 
 After using the quiz function in study-mode, the app listed the effectiveness metric as "250%" when the effectiveness metric should generally not exceed 100%.
 
-![250% efficiency](writeup_assets/efficiency_250.png)
+![250% effectiveness](writeup_assets/effectiveness_250.png)
 
 **Change:** initial version, n/a
 
@@ -43,20 +43,20 @@ After using the quiz function in study-mode, the app listed the effectiveness me
 
 **Delta:** initial version, n/a
 
-**Conclusion:** Website works but is not perfect. Efficiency score formula is faulty, and test cases need to be added.
+**Conclusion:** Website works but is not perfect. effectiveness score formula is faulty, and test cases need to be added.
 
 ### V2
 
-Test cases and modified efficiency formula implemented. All test cases pass. This is the result after specifying "binary search" as formula and asking about space and time complexity, then asking to be quizzed on the current study discussion:
-![0.771 effectiveness](writeup_assets/efficiency_0.771.png)
+Test cases and modified effectiveness formula implemented. All test cases pass. This is the result after specifying "binary search" as formula and asking about space and time complexity, then asking to be quizzed on the current study discussion:
+![0.771 effectiveness](writeup_assets/effectiveness_0.771.png)
 
 The effectiveness score is now 0.771: 11 of 14 question(s) correctly classified, 2 off topic.
 
 An effectiveness score of 1 is the optimal score.
 
-**Change:** Implement test cases, modify efficiency formula
+**Change:** Implement test cases, modify effectiveness formula
 
-**Motivating example:** An efficiency score of 250%, which is far above the expected max of 100%, is clearly faulty. The efficiency score has therefore been modified to be 
+**Motivating example:** An effectiveness score of 250%, which is far above the expected max of 100%, is clearly faulty. The effectiveness score has therefore been modified to be 
 ```
 effectiveness = (((# of questions in study mode's quiz function whose topics are correctly classified) - (# of questions in study mode's quiz function whose topics are not about what was discussed in the current study mode session) * 0.1) / # of study-mode quiz questions)
 ```
@@ -68,13 +68,15 @@ which rewards correct on-topic classifications referenced from current study cha
 
 ### V3
 
-**Change:**
+![effectiveness 0.938](writeup_assets/effectiveness_0.938.png)
 
-**Motivating example:**
+**Change:** Add safeguards, ensure the user is only quizzed on on-topic questions, actually show the explanations for correct/incorrect answers and the correct/incorrect answers themselves, ensure every question gets evaluated on results screen.
 
-**Delta:**
+**Motivating example:** The quiz function in study mode asked for the height of mount everest in the quiz as a multiple choice question, which has nothing to do with binary search.
 
-**Conclusion:**
+**Delta:** 0.938 - 0.771 = increase of 0.167 in effectiveness (recall that 1 is the optimal effectiveness score)
+
+**Conclusion:** Effectiveness score has gone up, and every question gets a score and explanation. UI/UX could be improved though.
 
 ## Code walkthrough
 
