@@ -1,6 +1,5 @@
 import os
 import json
-import re
 from flask import Flask, render_template, request, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -10,18 +9,6 @@ load_dotenv()
 app = Flask(__name__)
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 MODEL = "gpt-4o-mini"
-
-
-def chat(system_prompt, user_prompt):
-    """Plain text response (used for /generate)."""
-    response = client.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-    )
-    return response.choices[0].message.content
 
 
 def chat_json(system_prompt, user_prompt, messages=None):
@@ -49,18 +36,16 @@ def generate():
     algorithm = request.json.get("algorithm", "").strip()
     system = (
         "You are Algo Buddy, an AI that helps beginners learn algorithms. "
-        "When asked to implement an algorithm, respond ONLY with valid, syntactically correct Python code and inline comments. "
+        'Return a JSON object with a single key "code" whose value is a string. '
+        "If the algorithm tries to solve a problem for which no well-known solution exists (e.g. the halting problem), "
+        'set "code" to exactly: "# I don\'t know how to implement this, as a well-known solution has not been discovered yet". '
+        "Otherwise, set \"code\" to valid, syntactically correct Python code with inline comments. "
         "Write beginner-friendly code: use simple loops instead of list comprehensions, "
         "avoid advanced Python idioms, and add clear comments explaining each step. "
-        "Do NOT include markdown code fences or any text outside the Python code. "
-        "Every line must be valid Python syntax. "
-        "If the algorithm is very obscure (used by fewer than 3 people worldwide) or unsolvable, "
-        "respond with exactly: # I don't know how to implement this, but I can help you with a more common algorithm"
+        "Do NOT include markdown code fences inside the code string."
     )
-    code = chat(system, f"Implement the {algorithm} algorithm in Python with comments.")
-    # Strip markdown fences if the model adds them anyway
-    code = re.sub(r"^```[^\n]*\n?", "", code.strip())
-    code = re.sub(r"\n?```$", "", code.strip())
+    result = chat_json(system, f"Implement the {algorithm} algorithm in Python with comments.")
+    code = result.get("code", "")
     return jsonify({"code": code})
 
 
@@ -160,7 +145,7 @@ def study_effectiveness():
     topics_count = max(len(topics), 1)
     covered = result.get("covered", [])
     correctly_classified = sum(1 for c in covered if c)
-    effectiveness = round(correctly_classified / topics_count, 4)
+    effectiveness = min(round(correctly_classified / topics_count, 4), 1.0)
 
     return jsonify({
         "effectiveness": effectiveness,
