@@ -5,6 +5,7 @@ let studyHistory = [];
 let quizQuestions = [];
 let isStudyQuiz = false;
 let studyHistorySnapshot = [];
+let studyQuizTopics = [];
 
 function show(sectionId) {
   ["home-section", "code-section", "study-section", "quiz-section", "results-section"]
@@ -94,6 +95,7 @@ $("study-quiz-btn").addEventListener("click", async () => {
   const data = await post("/study/quiz", { algorithm: currentAlgorithm, history: studyHistory });
   setLoading(false);
   quizQuestions = data.questions;
+  studyQuizTopics = data.topics || [];
   renderQuiz(quizQuestions);
   show("quiz-section");
 });
@@ -152,6 +154,7 @@ $("quiz-done-btn").addEventListener("click", async () => {
     const effData = await post("/study/effectiveness", {
       history: studyHistorySnapshot,
       questions: quizQuestions,
+      topics: studyQuizTopics,
     });
     setLoading(false);
     effectiveness = effData;
@@ -179,14 +182,14 @@ function renderResults(results, effectiveness) {
   container.prepend(summary);
 
   if (effectiveness !== null && effectiveness !== undefined) {
-    const pct = Math.round(effectiveness.effectiveness * 100);
+    const val = Math.round(effectiveness.effectiveness * 1000) / 1000;
     const effDiv = document.createElement("div");
     effDiv.className = "effectiveness";
     effDiv.innerHTML =
-      `<h3>App Effectiveness: ${pct}%</h3>` +
-      `<p>This measures how well the app prepared you — ` +
-      `${effectiveness.correctly_classified} of the ${effectiveness.topics_count} ` +
-      `topic(s) covered in your study session appeared in the quiz.</p>`;
+      `<h3>🛠 Dev: App Effectiveness: ${val}</h3>` +
+      `<p>This measures how well the app prepared the user for this study session and quiz — ` +
+      `${effectiveness.correctly_classified} of ${effectiveness.total_questions} ` +
+      `question(s) correctly classified, ${effectiveness.off_topic} off-topic.</p>`;
     container.appendChild(effDiv);
   }
 }

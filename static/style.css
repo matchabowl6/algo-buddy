@@ -115,14 +115,16 @@ pre {
 #back-btn { margin-top: 0.5rem; }
 
 .effectiveness {
-  background: #e8f5e9;
-  border-left: 4px solid #2e7d32;
+  background: #1e1e1e;
+  border: 1px dashed #555;
   border-radius: 6px;
   padding: 0.75rem 1rem;
   margin-top: 1.25rem;
+  font-family: monospace;
+  color: #aaa;
 }
-.effectiveness h3 { margin-bottom: 0.4rem; }
-.effectiveness p { font-size: 0.95rem; color: #444; line-height: 1.5; }
+.effectiveness h3 { color: #888; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.effectiveness p { font-size: 0.85rem; line-height: 1.5; }
 
 /* Loading */
 #loading {
