@@ -112,7 +112,7 @@ def study_quiz():
         "You are Algo Buddy. Generate a quiz based on the study session. "
         f"There are {len(topics)} topics: {', '.join(topics)}. "
         f"Generate exactly 2 questions per topic ({num_questions} questions total), covering each topic evenly. "
-        f"DO NOT GENERATE MORE THAN {STUDY_QUIZ_QUESTION_LIMIT} QUESTIONS."
+        f"DO NOT GENERATE MORE THAN {STUDY_QUIZ_QUESTION_LIMIT} QUESTIONS. If the number of questions exceeds {STUDY_QUIZ_QUESTION_LIMIT}, remove topics from the quiz, but make sure every topic that remains gets exactly two questions each."
         'Return a JSON object with a single key "questions" whose value is an array of question objects. '
         "Each question has: 'topic' (string, one of the listed topics), "
         "'type' ('multiple_choice' or 'short_response'), 'question' (string), "
