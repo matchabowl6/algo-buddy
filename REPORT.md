@@ -45,3 +45,4 @@ My AI coding assistant, Kiro, was used to implement the website listed in the pl
 
 ### Moments Kiro failed
 - When trying to implement the eval metric, Kiro tried to implement the effectiveness metric as a measure of how well the user memorized information. This was corrected by interrupting Kiro and telling it "Please make it clear that 'study effectiveness' refers to how well the app is helping the user learn.'"
+- When asking Kiro to cap the effectiveness metric at 100%, Kiro wrote code the capped the output at 100% using the min(..., 1.0). This is not correct and merely hides errors; seeing when effectiveness exceeds 100% is important because that tells us something went wrong. This was fixed by telling Kiro 'the user must be able to see if effectiveness exceeded 100%, this tells us that something went wrong with the LLM's response'.
