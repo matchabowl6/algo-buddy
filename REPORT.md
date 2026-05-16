@@ -31,6 +31,14 @@ The initial website was built by first writing a plan (under the plan directory,
 
 The initial website (with the quiz and study modes) works as expected, even if there were a few UI/UX issues.
 
+**Change:** initial version, n/a
+**Motivating example:** initial version, n/a
+**Delta:**
+**Conclusion:**
+
+## Code walkthrough
+
+
 ## AI Disclosure
 
 My AI coding assistant, Kiro, was used to implement the website listed in the plan files (in the 'plan' directory) as well as implement the eval metric.
