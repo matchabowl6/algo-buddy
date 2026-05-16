@@ -1,6 +1,6 @@
 # LLM response requirements
 
-For each requirement listed here, a determinstic function can be written to determine whether or not the requirement is satisfied. These test functions must not call the LLM API.
+For each requirement listed here, a determinstic function can be written to determine whether or not the requirement is satisfied. These test functions must not call the LLM API with the exception of the valid JSON test.
 
 ## General
 - Every response from the LLM (gpt-4o-mini) returns strictly valid JSON
@@ -29,4 +29,4 @@ For each requirement listed here, a determinstic function can be written to dete
     - effectiveness should not be listed as a percentage
     - the optimal effectiveness score is 1
         - if the effectiveness score does exceed 1, do not hide this fact
-    - to make effectiveness possible to evaluate meaningfully, there should be 2 questions per topic discussed in study-mode session
+- To make effectiveness possible to evaluate meaningfully, there should be 2 questions per topic discussed in study-mode session

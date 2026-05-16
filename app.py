@@ -10,6 +10,28 @@ app = Flask(__name__)
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 MODEL = "gpt-4o-mini"
 
+# GENERATE and STUDY system and user prompts are shared between their respective endpoints and the eval_valid_json endpoint.
+GENERATE_ENDPOINT_SYSTEM_PROMPT = (
+    "You are Algo Buddy, an AI that helps beginners learn algorithms. "
+        'Return a JSON object with a single key "code" whose value is a string. '
+        "If the algorithm tries to solve a problem for which no well-known solution exists (e.g. the halting problem), "
+        'set "code" to exactly: "# I don\'t know how to implement this, as a well-known solution has not been discovered yet". '
+        "Otherwise, set \"code\" to valid, syntactically correct Python code with inline comments. "
+        "Write beginner-friendly code: use simple loops instead of list comprehensions, "
+        "avoid advanced Python idioms, and add clear comments explaining each step. "
+        "Do NOT include markdown code fences inside the code string."
+)
+GENERATE_ENDPOINT_USER_PROMPT_TEMPLATE = "Implement the {0} algorithm in Python with comments."
+
+STUDY_ENDPOINT_SYSTEM_PROMPT = (
+        "You are Algo Buddy, a helpful tutor for algorithms. "
+        "Answer questions about the algorithm clearly and concisely. "
+        "You may cover code details, time/space complexity, and real-world use cases. "
+        "Do not hallucinate. If you are unsure, say so. "
+        'Return a JSON object with a single key "answer" whose value is your response string.'
+)
+STUDY_ENDPOINT_USER_PROMPT_TEMPLATE = "Regarding the {0} algorithm: {1}"
+
 
 def chat_json(system_prompt, user_prompt, messages=None):
     """Strict JSON response via response_format."""
@@ -34,17 +56,8 @@ def index():
 @app.route("/generate", methods=["POST"])
 def generate():
     algorithm = request.json.get("algorithm", "").strip()
-    system = (
-        "You are Algo Buddy, an AI that helps beginners learn algorithms. "
-        'Return a JSON object with a single key "code" whose value is a string. '
-        "If the algorithm tries to solve a problem for which no well-known solution exists (e.g. the halting problem), "
-        'set "code" to exactly: "# I don\'t know how to implement this, as a well-known solution has not been discovered yet". '
-        "Otherwise, set \"code\" to valid, syntactically correct Python code with inline comments. "
-        "Write beginner-friendly code: use simple loops instead of list comprehensions, "
-        "avoid advanced Python idioms, and add clear comments explaining each step. "
-        "Do NOT include markdown code fences inside the code string."
-    )
-    result = chat_json(system, f"Implement the {algorithm} algorithm in Python with comments.")
+    system = GENERATE_ENDPOINT_SYSTEM_PROMPT
+    result = chat_json(system, GENERATE_ENDPOINT_USER_PROMPT_TEMPLATE.format(algorithm))
     code = result.get("code", "")
     return jsonify({"code": code})
 
@@ -56,17 +69,11 @@ def study():
     question = data.get("question", "")
     history = data.get("history", [])
 
-    system = (
-        "You are Algo Buddy, a helpful tutor for algorithms. "
-        "Answer questions about the algorithm clearly and concisely. "
-        "You may cover code details, time/space complexity, and real-world use cases. "
-        "Do not hallucinate. If you are unsure, say so. "
-        'Return a JSON object with a single key "answer" whose value is your response string.'
-    )
+    system = STUDY_ENDPOINT_SYSTEM_PROMPT
     messages = [{"role": "system", "content": system}]
     for h in history:
         messages.append({"role": h["role"], "content": h["content"]})
-    messages.append({"role": "user", "content": f"Regarding the {algorithm} algorithm: {question}"})
+    messages.append({"role": "user", "content": STUDY_ENDPOINT_USER_PROMPT_TEMPLATE.format(algorithm, question)})
 
     result = chat_json(system, "", messages=messages)
     answer = result.get("answer", "")
@@ -204,3 +211,44 @@ def grade():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+@app.route("/eval/valid-json", methods=["POST"])
+def eval_valid_json():
+    """
+    Calls the real OpenAI API and verifies response.choices[0].message.content
+    is strictly valid JSON. Returns {"pass": true} or {"pass": false, "error": "..."}.
+    """
+    system = request.json.get("system", "Return a JSON object with key \"ok\" set to true.")
+    prompt = request.json.get("prompt", "Respond now.")
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user",   "content": prompt},
+        ],
+        response_format={"type": "json_object"},
+    )
+    content = response.choices[0].message.content
+    try:
+        # Simulate generate() call
+        algorithm = "bubble sort" #data.get("algorithm", "").strip()
+        system = GENERATE_ENDPOINT_SYSTEM_PROMPT
+        chat_json(system, GENERATE_ENDPOINT_USER_PROMPT_TEMPLATE.format(algorithm))
+
+        # Simulate study() call
+        algorithm = "bubble sort" #data.get("algorithm", "")
+        question = "space complexity" #data.get("question", "")
+        history = [] #data.get("history", [])
+
+        system = STUDY_ENDPOINT_SYSTEM_PROMPT
+        messages = [{"role": "system", "content": system}]
+        for h in history:
+            messages.append({"role": h["role"], "content": h["content"]})
+        messages.append({"role": "user", "content": STUDY_ENDPOINT_USER_PROMPT_TEMPLATE.format(algorithm, question)})
+
+        chat_json(system, "", messages=messages)
+
+        return jsonify({"pass": True})
+    except json.JSONDecodeError as e:
+        return jsonify({"pass": False, "error": str(e)})
