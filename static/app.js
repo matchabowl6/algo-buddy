@@ -70,8 +70,8 @@ $("study-form").addEventListener("submit", async e => {
   const data = await post("/study", { algorithm: currentAlgorithm, question, history: studyHistory });
   setLoading(false);
 
-  studyHistory.push({ role: "user", content: question });
-  studyHistory.push({ role: "assistant", content: data.answer });
+  studyHistory.push({ role: "user", content: question, "off-topic": data["off-topic"] });
+  studyHistory.push({ role: "assistant", content: data.answer, "off-topic": data["off-topic"] });
   appendChat("Algo Buddy", data.answer);
 });
 
