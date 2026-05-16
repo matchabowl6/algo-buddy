@@ -99,12 +99,14 @@ def study_quiz():
     # Step 1: identify distinct topics from the study session
     topics_result = chat_json(
         "You are analyzing a study session conversation. "
-        "List every distinct topic that was discussed. "
+        f"List up to {int(STUDY_QUIZ_QUESTION_LIMIT / 2)} distinct topics that were discussed"
         'Return a JSON object with a single key "topics" whose value is an array of short topic strings. '
         "Be consistent and exhaustive. Each topic should be a concise phrase (e.g. 'time complexity', 'use cases').",
         f"Algorithm: {algorithm}\n\nStudy session:\n{context}"
     )
     topics = topics_result.get("topics", [])
+
+    # Calculate total number of questions
     num_questions = max(len(topics) * 2, 2)
 
     # Step 2: generate exactly 2 questions per topic
@@ -112,7 +114,6 @@ def study_quiz():
         "You are Algo Buddy. Generate a quiz based on the study session. "
         f"There are {len(topics)} topics: {', '.join(topics)}. "
         f"Generate exactly 2 questions per topic ({num_questions} questions total), covering each topic evenly. "
-        f"DO NOT GENERATE MORE THAN {STUDY_QUIZ_QUESTION_LIMIT} QUESTIONS. If the number of questions exceeds {STUDY_QUIZ_QUESTION_LIMIT}, remove topics from the quiz, but make sure every topic that remains gets exactly two questions each."
         'Return a JSON object with a single key "questions" whose value is an array of question objects. '
         "Each question has: 'topic' (string, one of the listed topics), "
         "'type' ('multiple_choice' or 'short_response'), 'question' (string), "
