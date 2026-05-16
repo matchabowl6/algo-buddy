@@ -12,9 +12,9 @@ the AI assistant's accuracy because the app is working with common, well-known, 
 
 Due to this, the eval metric is now based on the "study mode" function of this website (Algo Buddy). To summarize the new metric:
 ```
-effectiveness = (# of questions in study mode's quiz function whose topics are correctly classified / # of topics about the algorithm discussed in study mode before hitting the quiz button)
+effectiveness = (((# of questions in study mode's quiz function whose topics are correctly classified) - (# of questions in study mode's quiz function whose topics are not about what was discussed in the current study mode session) * 0.1) / # of study-mode quiz questions)
 ```
-\* single question per topic
+\* 2 questions per topic
 
 This is a better metric because it more closely measures whether or not the AI assistant is doing its job correctly to help the user memorize information about the algorithm.
 

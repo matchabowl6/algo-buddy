@@ -23,6 +23,10 @@ For each requirement listed here, a determinstic function can be written to dete
 - In quiz results (for every mode), no explanation of the correct response can exceed 500 characters.
 
 ### Quiz results after study mode only
-- Within the same study session after two back-to-back quizzes, the app effectiveness score should be the roughly the same (difference is within 0.5% of the previous score). Back-to-back means after taking the first quiz, the user did not enter any additional content into the "What are you struggling with?" box before taking the quiz again.
-- The app effectiveness score (effectiveness = (# of questions in study mode's quiz function whose topics are correctly classified / # of topics about the algorithm discussed in study mode before hitting the quiz button)) is at least 80%.
-- The app effectiveness score should not exceed 100%.
+- Within the same study session after two back-to-back quizzes, the app effectiveness score should be the roughly the same (difference is within 0.005 of the previous score). Back-to-back means after taking the first quiz, the user did not enter any additional content into the "What are you struggling with?" box before taking the quiz again.
+- The app effectiveness score, is at least 0.8.
+    - effectiveness = (((# of questions in study mode's quiz function whose topics are correctly classified) - (# of questions in study mode's quiz function whose topics are not about what was discussed in the current study mode session) * 0.1) / # of study-mode quiz questions)
+    - effectiveness should not be listed as a percentage
+    - the optimal effectiveness score is 1
+        - if the effectiveness score does exceed 1, do not hide this fact
+    - to make effectiveness possible to evaluate meaningfully, there should be 2 questions per topic discussed in study-mode session
