@@ -30,9 +30,16 @@ $("algo-form").addEventListener("submit", async e => {
   e.preventDefault();
   const algorithm = $("algo-input").value.trim();
   if (!algorithm) return;
+  $("algo-error").classList.add("hidden");
   setLoading(true);
   const data = await post("/generate", { algorithm });
   setLoading(false);
+  if (data.code && data.code.startsWith("# I don't know how to implement this")) {
+    $("algo-error").classList.remove("hidden");
+    $("algo-input").value = "";
+    $("algo-input").focus();
+    return;
+  }
   currentAlgorithm = algorithm;
   studyHistory = [];
   $("algo-title").textContent = algorithm;

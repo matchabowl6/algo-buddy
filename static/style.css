@@ -29,6 +29,7 @@ main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
   border: 1px solid #ccc;
   border-radius: 6px;
 }
+.error { color: #c62828; margin-top: 0.75rem; font-size: 0.95rem; }
 
 button {
   padding: 0.6rem 1.2rem;
