@@ -34,7 +34,7 @@ $("algo-form").addEventListener("submit", async e => {
   setLoading(true);
   const data = await post("/generate", { algorithm });
   setLoading(false);
-  if (data.code && data.code.startsWith("# I don't know how to implement this")) {
+  if (data.code == null) {
     $("algo-error").classList.remove("hidden");
     $("algo-input").value = "";
     $("algo-input").focus();
