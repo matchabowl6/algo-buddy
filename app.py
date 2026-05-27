@@ -13,9 +13,9 @@ MODEL = "gpt-4o-mini"
 # GENERATE and STUDY system and user prompts are shared between their respective endpoints and the eval_valid_json endpoint.
 GENERATE_ENDPOINT_SYSTEM_PROMPT = (
     "You are Algo Buddy, an AI that helps beginners learn algorithms. "
-        'Return a JSON object with a single key "code" whose value is a string. '
+        'Return a JSON object that is either empty or a single key "code" whose value is a string. '
         "If the algorithm tries to solve a problem for which no well-known solution exists (e.g. the halting problem), "
-        'set "code" to exactly: "# I don\'t know how to implement this, as a well-known solution has not been discovered yet". '
+        'return an empty JSON object. '
         "Otherwise, set \"code\" to valid, syntactically correct Python code with inline comments. "
         "Write beginner-friendly code: use simple loops instead of list comprehensions, "
         "avoid advanced Python idioms, and add clear comments explaining each step. "
@@ -61,6 +61,8 @@ def generate():
     system = GENERATE_ENDPOINT_SYSTEM_PROMPT
     result = chat_json(system, GENERATE_ENDPOINT_USER_PROMPT_TEMPLATE.format(algorithm))
     code = result.get("code", "")
+
+    if code is None or len(code) == 0: return jsonify({})
     return jsonify({"code": code})
 
 
