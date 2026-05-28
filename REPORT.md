@@ -1,8 +1,5 @@
 # Project report
 
-Possibly elaborate on eval metrics.
-Also elaborate on why a single LLM prompt cannot be used to service the whole website.
-
 Initial website was developed by prompting Kiro to "implement the website described in plan/start.md".
 
 ## Course corrections
@@ -83,6 +80,8 @@ which rewards correct on-topic classifications referenced from current study cha
 If during study mode, the user decides to ask "What is the height of mount everest", the app will respond by saying the question is off topic. Off topic questions won't be included in the quiz.
 
 ### How this is achieved
+
+*Note: line numbers here are based on `app.py` and `app.js` from the commit with hash `d5c4a99fe171bd14446c31f14c6db0567a8ef5e9`*
 
 This is achieved by including instructions to include in the response a JSON value whose key is "off-topic" and whose value is true if the user prompt does not have anything to do with algorithms and false otherwise. This is at app.py:31 and occurs as a response to the `/study` endpoint (whose method signature is at app.py:68).
 
