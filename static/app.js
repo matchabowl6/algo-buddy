@@ -10,6 +10,7 @@ let studyQuizTopics = [];
 function show(sectionId) {
   ["home-section", "code-section", "study-section", "quiz-section", "results-section"]
     .forEach(id => $(`${id}`).classList.toggle("hidden", id !== sectionId));
+  document.querySelector("header").classList.toggle("hidden", sectionId === "home-section");
 }
 
 function setLoading(on) {
@@ -33,7 +34,6 @@ $("algo-form").addEventListener("submit", async e => {
   $("algo-error").classList.add("hidden");
   setLoading(true);
   const data = await post("/generate", { algorithm });
-  setLoading(false);
   if (data.code == null) {
     $("algo-error").classList.remove("hidden");
     $("algo-input").value = "";
@@ -42,8 +42,12 @@ $("algo-form").addEventListener("submit", async e => {
   }
   currentAlgorithm = algorithm;
   studyHistory = [];
-  $("algo-title").textContent = algorithm;
   $("code-output").textContent = data.code;
+
+  const summary = await post("/algo-name-summary", { algorithm });
+  $("algo-name").textContent = summary.name || algorithm;
+  setLoading(false);
+
   show("code-section");
 });
 
