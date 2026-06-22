@@ -55,6 +55,16 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/algo-name-summary", methods=["POST"])
+def algo_name_summary():
+    algorithm = request.json.get("algorithm", "").strip()
+    result = chat_json(
+        'Return a JSON object with a single key "name" whose value is the concise, properly capitalized canonical algorithm name (e.g. "Binary Search", "Merge Sort").',
+        f"User input: {algorithm}"
+    )
+    return jsonify({"name": result.get("name", algorithm.title())})
+
+
 @app.route("/generate", methods=["POST"])
 def generate():
     algorithm = request.json.get("algorithm", "").strip()

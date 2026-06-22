@@ -7,14 +7,15 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <header>
-    <h1>Algo Buddy</h1>
-    <p>Your AI-powered algorithm study companion</p>
+  <header class="hidden">
+    <span id="algo-name"></span>
   </header>
 
   <main>
     <!-- Home: algorithm input -->
     <section id="home-section">
+      <h1>Algo Buddy</h1>
+      <p id="home-subtitle">Your AI-powered algorithm study companion</p>
       <form id="algo-form">
         <input id="algo-input" type="text" placeholder="Enter an algorithm (e.g. binary search)" autocomplete="off" required>
         <button type="submit">Generate Code</button>
@@ -24,7 +25,7 @@
 
     <!-- Code display + mode selection -->
     <section id="code-section" class="hidden">
-      <h2 id="algo-title"></h2>
+      <h2>Code</h2>
       <pre><code id="code-output"></code></pre>
       <div id="mode-buttons">
         <button id="study-btn">Study Mode</button>
