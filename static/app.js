@@ -10,7 +10,9 @@ let studyQuizTopics = [];
 function show(sectionId) {
   ["home-section", "code-section", "study-section", "quiz-section", "results-section"]
     .forEach(id => $(`${id}`).classList.toggle("hidden", id !== sectionId));
-  document.querySelector("header").classList.toggle("hidden", sectionId === "home-section");
+  const isHome = sectionId === "home-section";
+  document.querySelector("header").classList.toggle("hidden", isHome);
+  document.body.classList.toggle("has-header", !isHome);
 }
 
 function setLoading(on) {
