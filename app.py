@@ -30,6 +30,7 @@ STUDY_ENDPOINT_SYSTEM_PROMPT = (
         "Answer questions about the algorithm clearly and concisely. "
         "You may cover code details, time/space complexity, and real-world use cases. "
         "Do not hallucinate. If you are unsure, say so. "
+        "If using markdown bullet points, prefix each point with an asterisk (*) and a space. Indent nested bullet points with two spaces per level. Add a blank line before and after bullet point lists. If a bullet point must span more than one line, indent the second and subsequent lines with two spaces. "
         'Return a JSON object with two keys: "answer" whose value is your response string AND "off-topic": whose value is the boolean value true if the user prompt has nothing to do with algorithms (false otherwise).'
 )
 STUDY_ENDPOINT_USER_PROMPT_TEMPLATE = "Regarding the {0} algorithm: {1}"
@@ -94,6 +95,7 @@ def study():
     result = chat_json(system, "", messages=messages)
     answer = result.get("answer", "")
     off_topic = result.get("off-topic", False)
+    print(answer)
     return jsonify({"answer": JustHTML(markdown(answer)).to_html(), "off-topic": off_topic})
 
 
