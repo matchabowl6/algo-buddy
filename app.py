@@ -95,7 +95,6 @@ def study():
     result = chat_json(system, "", messages=messages)
     answer = result.get("answer", "")
     off_topic = result.get("off-topic", False)
-    print(answer)
     return jsonify({"answer": JustHTML(markdown(answer)).to_html(), "off-topic": off_topic})
 
 
