@@ -26,6 +26,16 @@ header {
 
 header p { color: #aaa; margin-top: 0rem; font-size: 0.95rem; }
 
+ul, ol {
+  list-style-position: outside;
+  padding-left: 1.5em;
+  margin-left: 0;
+}
+
+li {
+  padding-left: 0.25em;
+}
+
 main {
   max-width: 800px;
   width: 100%;
