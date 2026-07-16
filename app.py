@@ -3,6 +3,8 @@ import json
 from flask import Flask, render_template, request, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
+from justhtml import JustHTML
+from markdown import markdown
 
 load_dotenv()
 
@@ -92,7 +94,7 @@ def study():
     result = chat_json(system, "", messages=messages)
     answer = result.get("answer", "")
     off_topic = result.get("off-topic", False)
-    return jsonify({"answer": answer, "off-topic": off_topic})
+    return jsonify({"answer": JustHTML(markdown(answer)).to_html(), "off-topic": off_topic})
 
 
 @app.route("/study/quiz", methods=["POST"])
