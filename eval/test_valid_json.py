@@ -16,6 +16,6 @@ def client():
 
 
 def test_openai_returns_valid_json(client):
-    res = client.post("/eval/valid-json")
+    res = client.post("/api/eval/valid-json")
     data = res.get_json()
     assert data["pass"], f"OpenAI returned invalid JSON: {data.get('error')}"
