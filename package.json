@@ -3,6 +3,7 @@
     "vite": "^8.1.5"
   },
   "dependencies": {
-    "dompurify": "^3.4.12"
+    "dompurify": "^3.4.12",
+    "marked": "^18.0.6"
   }
 }

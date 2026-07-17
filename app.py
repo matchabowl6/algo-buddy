@@ -89,7 +89,7 @@ def study():
     result = chat_json(system, "", messages=messages)
     answer = result.get("answer", "")
     off_topic = result.get("off-topic", False)
-    return jsonify({"answer": JustHTML(markdown(answer)).to_html(), "off-topic": off_topic})
+    return jsonify({"answer": answer, "off-topic": off_topic})
 
 
 @app.route("/api/study/quiz", methods=["POST"])
