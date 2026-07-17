@@ -2,5 +2,3 @@ flask==3.1.1
 openai==1.82.0
 pytest==9.0.3
 python-dotenv==1.2.2
-markdown==3.10.2
-justhtml>=3.7.0

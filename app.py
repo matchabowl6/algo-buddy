@@ -3,8 +3,6 @@ import json
 from flask import Flask, render_template, request, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
-from justhtml import JustHTML
-from markdown import markdown
 
 load_dotenv()
 
