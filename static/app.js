@@ -35,7 +35,7 @@ $("algo-form").addEventListener("submit", async e => {
   if (!algorithm) return;
   $("algo-error").classList.add("hidden");
   setLoading(true);
-  const data = await post("/generate", { algorithm });
+  const data = await post("/api/generate", { algorithm });
   if (data.code == null) {
     setLoading(false);
     $("algo-error").classList.remove("hidden");
@@ -47,7 +47,7 @@ $("algo-form").addEventListener("submit", async e => {
   studyHistory = [];
   $("code-output").textContent = data.code;
 
-  const summary = await post("/algo-name-summary", { algorithm });
+  const summary = await post("/api/algo-name-summary", { algorithm });
   $("algo-name").textContent = summary.name || algorithm;
   setLoading(false);
 
@@ -65,7 +65,7 @@ $("study-btn").addEventListener("click", () => {
 $("quiz-btn").addEventListener("click", async () => {
   isStudyQuiz = false;
   setLoading(true);
-  const data = await post("/quiz", { algorithm: currentAlgorithm });
+  const data = await post("/api/quiz", { algorithm: currentAlgorithm });
   setLoading(false);
   quizQuestions = data.questions;
   renderQuiz(quizQuestions);
@@ -81,7 +81,7 @@ $("study-form").addEventListener("submit", async e => {
 
   appendChat("You", question);
   setLoading(true);
-  const data = await post("/study", { algorithm: currentAlgorithm, question, history: studyHistory });
+  const data = await post("/api/study", { algorithm: currentAlgorithm, question, history: studyHistory });
   setLoading(false);
 
   studyHistory.push({ role: "user", content: question, "off-topic": data["off-topic"] });
@@ -106,7 +106,7 @@ $("study-quiz-btn").addEventListener("click", async () => {
   isStudyQuiz = true;
   studyHistorySnapshot = [...studyHistory];
   setLoading(true);
-  const data = await post("/study/quiz", { algorithm: currentAlgorithm, history: studyHistory });
+  const data = await post("/api/study/quiz", { algorithm: currentAlgorithm, history: studyHistory });
   setLoading(false);
   quizQuestions = data.questions;
   studyQuizTopics = data.topics || [];
@@ -155,7 +155,7 @@ $("quiz-done-btn").addEventListener("click", async () => {
   });
 
   setLoading(true);
-  const data = await post("/quiz/grade", {
+  const data = await post("/api/quiz/grade", {
     algorithm: currentAlgorithm,
     questions: quizQuestions,
     answers,
@@ -165,7 +165,7 @@ $("quiz-done-btn").addEventListener("click", async () => {
   let effectiveness = null;
   if (isStudyQuiz) {
     setLoading(true);
-    const effData = await post("/study/effectiveness", {
+    const effData = await post("/api/study/effectiveness", {
       history: studyHistorySnapshot,
       questions: quizQuestions,
       topics: studyQuizTopics,
