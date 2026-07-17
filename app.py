@@ -8,7 +8,7 @@ from markdown import markdown
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=None)
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 MODEL = "gpt-4o-mini"
 
@@ -52,13 +52,7 @@ def chat_json(system_prompt, user_prompt, messages=None):
     )
     return json.loads(response.choices[0].message.content)
 
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-
-@app.route("/algo-name-summary", methods=["POST"])
+@app.route("/api/algo-name-summary", methods=["POST"])
 def algo_name_summary():
     algorithm = request.json.get("algorithm", "").strip()
     result = chat_json(
@@ -68,7 +62,7 @@ def algo_name_summary():
     return jsonify({"name": result.get("name", algorithm.title())})
 
 
-@app.route("/generate", methods=["POST"])
+@app.route("/api/generate", methods=["POST"])
 def generate():
     algorithm = request.json.get("algorithm", "").strip()
     system = GENERATE_ENDPOINT_SYSTEM_PROMPT
@@ -79,7 +73,7 @@ def generate():
     return jsonify({"code": code})
 
 
-@app.route("/study", methods=["POST"])
+@app.route("/api/study", methods=["POST"])
 def study():
     data = request.json
     algorithm = data.get("algorithm", "")
@@ -98,7 +92,7 @@ def study():
     return jsonify({"answer": JustHTML(markdown(answer)).to_html(), "off-topic": off_topic})
 
 
-@app.route("/study/quiz", methods=["POST"])
+@app.route("/api/study/quiz", methods=["POST"])
 def study_quiz():
     data = request.json
     algorithm = data.get("algorithm", "")
@@ -141,7 +135,7 @@ def study_quiz():
     return jsonify({"questions": questions, "topics": topics})
 
 
-@app.route("/quiz", methods=["POST"])
+@app.route("/api/quiz", methods=["POST"])
 def quiz():
     algorithm = request.json.get("algorithm", "")
     system = (
@@ -162,7 +156,7 @@ def quiz():
     return jsonify({"questions": questions})
 
 
-@app.route("/study/effectiveness", methods=["POST"])
+@app.route("/api/study/effectiveness", methods=["POST"])
 def study_effectiveness():
     data = request.json
     history = data.get("history", [])
@@ -202,7 +196,7 @@ def study_effectiveness():
     })
 
 
-@app.route("/quiz/grade", methods=["POST"])
+@app.route("/api/quiz/grade", methods=["POST"])
 def grade():
     data = request.json
     algorithm = data.get("algorithm", "")
@@ -239,7 +233,7 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 
-@app.route("/eval/valid-json", methods=["POST"])
+@app.route("/api/eval/valid-json", methods=["POST"])
 def eval_valid_json():
     """
     Calls the real OpenAI API and verifies response.choices[0].message.content
