@@ -1,3 +1,5 @@
+import DOMPurify from "dompurify";
+
 const $ = id => document.getElementById(id);
 
 let currentAlgorithm = "";
@@ -92,7 +94,7 @@ $("study-form").addEventListener("submit", async e => {
 function appendChat(sender, text) {
   const div = document.createElement("div");
   div.className = `chat-msg ${sender === "You" ? "user" : "bot"}`;
-  div.innerHTML = `<strong>${sender}:</strong> ${text}`;
+  div.innerHTML = `<strong>${sender}:</strong> ${DOMPurify.sanitize(text)}`;
   $("study-chat").appendChild(div);
   $("study-chat").scrollTop = $("study-chat").scrollHeight;
 }
