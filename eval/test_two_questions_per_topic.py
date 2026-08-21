@@ -1,7 +1,7 @@
 """Study quiz must have exactly 2 questions per topic discussed in the session."""
 import pytest
 from collections import Counter
-from app import app
+from api.app import app
 
 
 @pytest.fixture
@@ -12,7 +12,7 @@ def client():
 
 
 def test_two_questions_per_topic(client):
-    res = client.post("/study/quiz", json={
+    res = client.post("/api/study/quiz", json={
         "algorithm": "bubble sort",
         "history": [
             {"role": "user",      "content": "explain time complexity"},

@@ -1,7 +1,7 @@
 """Generated Python code must have no syntax errors."""
 import ast
 import pytest
-from app import app
+from api.app import app
 
 
 @pytest.fixture
@@ -16,7 +16,7 @@ ALGORITHMS = ["bubble sort", "binary search", "merge sort", "quicksort", "depth 
 
 @pytest.mark.parametrize("algorithm", ALGORITHMS)
 def test_generated_code_has_no_syntax_errors(client, algorithm):
-    res = client.post("/generate", json={"algorithm": algorithm})
+    res = client.post("/api/generate", json={"algorithm": algorithm})
     code = res.get_json()["code"]
     # ast.parse raises SyntaxError if the code is invalid
     ast.parse(code)

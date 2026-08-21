@@ -1,6 +1,6 @@
 """Back-to-back effectiveness scores must differ by no more than 0.005."""
 import pytest
-from app import app
+from api.app import app
 
 HISTORY = [
     {"role": "user",      "content": "explain time complexity"},
@@ -25,7 +25,7 @@ def client():
 
 
 def _get_effectiveness(client):
-    res = client.post("/study/effectiveness", json={
+    res = client.post("/api/study/effectiveness", json={
         "history": HISTORY,
         "questions": QUESTIONS,
         "topics": TOPICS,

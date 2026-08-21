@@ -1,6 +1,6 @@
 """correct_explanation must be present and between 25 and 250 characters for every result."""
 import pytest
-from app import app
+from api.app import app
 
 QUESTIONS = [
     {"type": "short_response", "question": "What is the time complexity of bubble sort?", "answer": "O(n^2)"},
@@ -20,7 +20,7 @@ def client():
 
 
 def test_correct_explanation_length(client):
-    res = client.post("/quiz/grade", json={
+    res = client.post("/api/quiz/grade", json={
         "algorithm": "bubble sort",
         "questions": QUESTIONS,
         "answers": ANSWERS,

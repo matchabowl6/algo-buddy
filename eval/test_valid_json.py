@@ -5,7 +5,7 @@ generate() and study() server-side.
 JSONDecodeError is caught server-side; the test fails if pass is False.
 """
 import pytest
-from app import app
+from api.app import app
 
 
 @pytest.fixture

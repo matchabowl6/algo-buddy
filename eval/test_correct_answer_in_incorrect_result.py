@@ -1,6 +1,6 @@
 """For incorrect answers, correct_explanation must also be 30–500 chars."""
 import pytest
-from app import app
+from api.app import app
 
 QUESTIONS = [
     {"type": "short_response", "question": "What is the time complexity of bubble sort?", "answer": "O(n^2)"},
@@ -19,7 +19,7 @@ def client():
 
 
 def test_correct_explanation_present_in_incorrect_result(client):
-    res = client.post("/quiz/grade", json={
+    res = client.post("/api/quiz/grade", json={
         "algorithm": "bubble sort",
         "questions": QUESTIONS,
         "answers": ANSWERS,
