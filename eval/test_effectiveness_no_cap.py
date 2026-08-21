@@ -1,6 +1,6 @@
 """Effectiveness > 1.0 must not be hidden — the raw value must be returned as-is."""
 import pytest
-from app import app
+from api.app import app
 
 # Craft a scenario where correctly_classified > total_questions is impossible via the
 # formula, but we can verify the server does not clamp the value by injecting a
@@ -29,7 +29,7 @@ def test_effectiveness_above_1_not_clamped(client):
         ]
     }
     with patch("app.chat_json", return_value=mock_result):
-        res = client.post("/study/effectiveness", json={
+        res = client.post("/api/study/effectiveness", json={
             "history": [{"role": "user", "content": "x"}],
             "questions": [
                 {"question": "Q1", "topic": "t"},

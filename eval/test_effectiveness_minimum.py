@@ -1,6 +1,6 @@
 """Effectiveness score must be at least 0.8."""
 import pytest
-from app import app
+from api.app import app
 
 HISTORY = [
     {"role": "user",      "content": "explain time complexity"},
@@ -25,7 +25,7 @@ def client():
 
 
 def test_effectiveness_at_least_0_8(client):
-    res = client.post("/study/effectiveness", json={
+    res = client.post("/api/study/effectiveness", json={
         "history": HISTORY,
         "questions": QUESTIONS,
         "topics": TOPICS,
